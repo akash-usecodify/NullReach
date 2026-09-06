@@ -24,6 +24,7 @@ import {
 import { Lead } from '../types';
 import { useAuth } from '../context/AuthContext';
 import { CREDIT_UNIT_PRICE_USD, MAX_TOP_UP_CREDITS, MIN_TOP_UP_CREDITS } from '../data/pricingPlans';
+import { NullReachLogo } from './NullReachLogo';
 
 interface LandingPageProps {
   leads: Lead[];
@@ -93,30 +94,30 @@ export const LandingPage: React.FC<LandingPageProps> = ({
           
           {/* Brand Logo */}
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-purple-600 via-indigo-600 to-purple-800 flex items-center justify-center font-serif italic text-xl font-bold text-white shadow-lg shadow-purple-950/50 border border-white/20">
-              N
+            <div className="w-11 h-11 rounded-2xl bg-black/50 p-1 flex items-center justify-center shadow-lg shadow-purple-950/50 border border-white/10 shrink-0">
+              <NullReachLogo className="w-full h-full" />
             </div>
             <div>
               <div className="flex items-center gap-2">
                 <span className="font-serif italic text-2xl font-bold tracking-tight text-white">NullReach</span>
                 <span className="text-[9px] uppercase tracking-wider font-mono font-bold bg-purple-500/20 text-purple-300 border border-purple-500/30 px-2 py-0.5 rounded-full">
-                  v2.1 Enterprise
+                  v2.1
                 </span>
               </div>
-              <p className="text-[10px] text-white/50 tracking-wider uppercase font-medium">Executive Lead Intelligence</p>
+              <p className="text-[10px] text-purple-400 font-semibold tracking-wider uppercase">UseCodify</p>
             </div>
           </div>
 
-          {/* Center Navigation Links (Desktop) */}
-          <nav className="hidden md:flex items-center gap-8 text-xs font-semibold uppercase tracking-widest text-white/60">
-            <a href="#features" className="hover:text-white transition">Platform</a>
-            <a href="#database-preview" className="hover:text-white transition">Live Directory</a>
-            <a href="#pricing-calculator" className="hover:text-white transition">Pricing ($0.99/cr)</a>
-            <a href="#stripe-payment" className="hover:text-white transition">Stripe Checkout</a>
+          {/* Center Navigation Links (Desktop) - Section Specific */}
+          <nav className="hidden lg:flex items-center gap-7 text-xs font-semibold uppercase tracking-widest text-white/60">
+            <a href="#features" className="hover:text-purple-300 transition">Platform Architecture</a>
+            <a href="#database-preview" className="hover:text-purple-300 transition">Directory Preview</a>
+            <a href="#pricing-calculator" className="hover:text-purple-300 transition">Pricing Calculator</a>
+            <a href="#stripe-payment" className="hover:text-purple-300 transition">Instant Top-Up</a>
           </nav>
 
-          {/* Right Action Controls */}
-          <div className="flex items-center gap-3">
+          {/* Right Action Controls & CTA */}
+          <div className="flex items-center gap-2 sm:gap-3">
             {currentUser ? (
               <div className="flex items-center gap-3">
                 <div className="hidden sm:flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/5 border border-white/10 text-xs">
@@ -146,21 +147,33 @@ export const LandingPage: React.FC<LandingPageProps> = ({
               </div>
             ) : (
               <div className="flex items-center gap-2 sm:gap-3">
+                {/* Direct CTA: Enter Portal */}
+                <button
+                  id="nav-enter-portal-cta-btn"
+                  onClick={onEnterPortal}
+                  className="hidden md:flex items-center gap-1.5 px-3.5 py-2 rounded-full text-xs font-semibold uppercase tracking-wider text-white/80 hover:text-white bg-white/5 hover:bg-white/10 border border-white/10 transition cursor-pointer"
+                  title="Enter the Lead Intelligence Portal"
+                >
+                  <span>Enter Portal</span>
+                  <ArrowRight className="w-3.5 h-3.5 text-purple-400" />
+                </button>
+
                 <button
                   id="nav-sign-in-btn"
                   onClick={() => onOpenAuth('login')}
-                  className="px-4 py-2 rounded-full text-xs font-bold uppercase tracking-wider text-white/80 hover:text-white hover:bg-white/10 transition cursor-pointer flex items-center gap-1.5"
+                  className="px-3 sm:px-4 py-2 rounded-full text-xs font-bold uppercase tracking-wider text-white/80 hover:text-white hover:bg-white/10 transition cursor-pointer flex items-center gap-1.5"
                 >
                   <LogIn className="w-3.5 h-3.5" />
                   <span>Sign In</span>
                 </button>
 
+                {/* Primary CTA: Claim Free Credits */}
                 <button
                   id="nav-register-btn"
                   onClick={() => onOpenAuth('register')}
-                  className="px-4 sm:px-5 py-2.5 rounded-full text-xs font-bold uppercase tracking-wider bg-purple-600 hover:bg-purple-500 text-white transition shadow-lg shadow-purple-950/40 flex items-center gap-1.5 cursor-pointer"
+                  className="px-4 sm:px-5 py-2.5 rounded-full text-xs font-bold uppercase tracking-wider bg-gradient-to-r from-purple-600 via-indigo-600 to-purple-600 hover:from-purple-500 hover:to-indigo-500 text-white transition shadow-lg shadow-purple-950/40 flex items-center gap-2 cursor-pointer ring-1 ring-purple-400/30 hover:ring-purple-400/60"
                 >
-                  <UserPlus className="w-3.5 h-3.5" />
+                  <Sparkles className="w-3.5 h-3.5 text-amber-300 shrink-0" />
                   <span>Get 3 Free Credits</span>
                 </button>
               </div>
@@ -784,13 +797,14 @@ export const LandingPage: React.FC<LandingPageProps> = ({
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-6">
           <div className="flex flex-col sm:flex-row items-center gap-3 text-center sm:text-left">
             <div className="flex items-center gap-2">
+              <NullReachLogo className="w-5 h-5 shrink-0" />
               <span className="font-serif italic font-bold text-white text-base">NullReach</span>
-              <span className="text-white/40">— Enterprise B2B Lead Intelligence</span>
+              <span className="text-white/40">— UseCodify</span>
             </div>
             <div className="hidden sm:block text-white/20">•</div>
             <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/[0.04] border border-white/10 text-white/70 text-[11px]">
               <span>A product by</span>
-              <span className="font-semibold text-purple-300">usecodify</span>
+              <span className="font-semibold text-purple-300">UseCodify</span>
             </div>
           </div>
 
@@ -814,7 +828,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-6 pt-6 border-t border-white/5 flex flex-col sm:flex-row items-center justify-between gap-3 text-[11px] text-white/40">
           <div>
-            © {new Date().getFullYear()} NullReach. All rights reserved. A product by usecodify.
+            © {new Date().getFullYear()} NullReach. All rights reserved. A product by UseCodify.
           </div>
           <div className="flex items-center gap-4">
             <span>Exclusive Pipeline Protection</span>

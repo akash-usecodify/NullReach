@@ -21,7 +21,7 @@ interface AuthContextType {
   isLeadBookmarked: (leadId: string) => boolean;
   recordLeadView: (leadId: string) => void;
   updateProfile: (data: { name?: string; password?: string; company?: string; title?: string }) => { success: boolean; message: string };
-  topUpCredits: (amount: number, priceUsd: number, packName: string) => void;
+  topUpCredits: (amount: number, priceUsd: number, packName: string, targetUserId?: string) => void;
   allUsers: User[];
   switchUser: (userId: string) => void;
 }
@@ -240,14 +240,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return DEFAULT_USERS;
   });
 
+  // By default, user is signed out (null)
   const [currentUserId, setCurrentUserId] = useState<string | null>(() => {
     try {
-      const saved = localStorage.getItem(CURRENT_USER_ID_KEY);
-      if (saved) return saved;
+      // Clear persistent auto-login so all visitors are signed out by default
+      localStorage.removeItem(CURRENT_USER_ID_KEY);
+      // Only keep session-level sign-in if explicitly authenticated in the current browser tab
+      return sessionStorage.getItem(CURRENT_USER_ID_KEY);
     } catch {
-      // ignore
+      return null;
     }
-    return 'user-admin-1';
   });
 
   const [transactions, setTransactions] = useState<CreditTransaction[]>(() => {
@@ -295,14 +297,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   }, [users]);
 
-  // Sync currentUserId to storage
+  // Sync currentUserId to session storage
   useEffect(() => {
     try {
       if (currentUserId) {
-        localStorage.setItem(CURRENT_USER_ID_KEY, currentUserId);
+        sessionStorage.setItem(CURRENT_USER_ID_KEY, currentUserId);
       } else {
-        localStorage.removeItem(CURRENT_USER_ID_KEY);
+        sessionStorage.removeItem(CURRENT_USER_ID_KEY);
       }
+      localStorage.removeItem(CURRENT_USER_ID_KEY);
     } catch {
       // ignore
     }
@@ -630,19 +633,19 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }));
   };
 
-  const topUpCredits = (amount: number, priceUsd: number, packName: string) => {
-    if (!currentUser) return;
+  const topUpCredits = (amount: number, priceUsd: number, packName: string, targetUserId?: string) => {
+    const activeUserId = targetUserId || currentUser?.id;
+    if (!activeUserId) return;
 
     // Enforce min 1 and max 50 credits per top-up
     const safeAmount = Math.max(1, Math.min(50, Math.round(amount)));
     const safePrice = priceUsd > 0 ? priceUsd : Number((safeAmount * 0.99).toFixed(2));
-    const newBalance = currentUser.credits + safeAmount;
 
     setUsers(prev => prev.map(u => {
-      if (u.id === currentUser.id) {
+      if (u.id === activeUserId) {
         return {
           ...u,
-          credits: newBalance,
+          credits: u.credits + safeAmount,
         };
       }
       return u;
@@ -650,7 +653,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     const purchaseTx: CreditTransaction = {
       id: `tx-${Date.now()}`,
-      userId: currentUser.id,
+      userId: activeUserId,
       type: 'purchase',
       amount: safeAmount,
       priceUsd: safePrice,

@@ -22,12 +22,14 @@ interface AuthModalProps {
   isOpen: boolean;
   onClose: () => void;
   initialMode?: 'login' | 'register';
+  onSuccess?: () => void;
 }
 
 export const AuthModal: React.FC<AuthModalProps> = ({
   isOpen,
   onClose,
   initialMode = 'register',
+  onSuccess,
 }) => {
   const { login, register, allUsers, switchUser, adminSettings } = useAuth();
   const [mode, setMode] = useState<'login' | 'register'>(initialMode);
@@ -96,6 +98,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
       setTimeout(() => {
         setIsLoading(false);
         onClose();
+        onSuccess?.();
       }, 700);
     } catch {
       setIsLoading(false);
@@ -113,6 +116,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
     });
     setTimeout(() => {
       onClose();
+      onSuccess?.();
     }, 450);
   };
 

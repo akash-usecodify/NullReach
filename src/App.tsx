@@ -44,6 +44,7 @@ import { TransactionHistoryModal } from './components/TransactionHistoryModal';
 import { UserProfileModal } from './components/UserProfileModal';
 import { AdminPanelModal } from './components/AdminPanelModal';
 import { LandingPage } from './components/LandingPage';
+import { NullReachLogo } from './components/NullReachLogo';
 
 const LEADS_STORAGE_KEY = 'nullreach_custom_leads_v2';
 const LEGACY_LEADS_STORAGE_KEY = 'leadflow_custom_leads_v1';
@@ -136,10 +137,10 @@ function MainPortal() {
   const [isHistoryModalOpen, setIsHistoryModalOpen] = useState(false);
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
   const [isAdminPanelOpen, setIsAdminPanelOpen] = useState(false);
-  // View mode: 'portal' or 'landing'
-  const [viewMode, setViewMode] = useState<'portal' | 'landing'>('portal');
-  // Gatekeeper: only show portal when user is logged in
-  const isViewingLanding = !currentUser || viewMode === 'landing';
+  // View mode: default to 'landing' so visitor always sees landing page first!
+  const [viewMode, setViewMode] = useState<'landing' | 'portal'>('landing');
+  // Gatekeeper: only show portal when user has explicitly entered and is authenticated
+  const isViewingLanding = viewMode === 'landing' || !currentUser;
 
   // Toast feedback state
   const [toastMessage, setToastMessage] = useState<{ text: string; type: 'success' | 'info' | 'error' } | null>(null);
@@ -490,13 +491,7 @@ function MainPortal() {
             if (credits && credits > 0) {
               setTopUpInitialCredits(credits);
             }
-            if (!currentUser) {
-              setAuthMode('register');
-              setIsAuthModalOpen(true);
-              showToast('Create a free account (3 free credits included) to top up', 'info');
-            } else {
-              setIsTopUpModalOpen(true);
-            }
+            setIsTopUpModalOpen(true);
           }}
         />
 
@@ -505,6 +500,9 @@ function MainPortal() {
           isOpen={isAuthModalOpen}
           onClose={() => setIsAuthModalOpen(false)}
           initialMode={authMode}
+          onSuccess={() => {
+            setViewMode('portal');
+          }}
         />
 
         <TopUpModal
@@ -544,13 +542,18 @@ function MainPortal() {
       {/* Artistic Flair Sidebar Navigation (Desktop) */}
       <aside className="hidden lg:flex w-[280px] shrink-0 border-r border-white/5 bg-[#0D0D0F] flex-col p-8 sticky top-0 h-screen overflow-y-auto select-none z-30">
         <div className="mb-8">
-          <div className="flex items-center gap-2.5 mb-1.5">
-            <h1 className="text-3xl font-serif italic tracking-tight text-white">NullReach</h1>
-            <span className="text-[9px] uppercase tracking-wider font-bold bg-purple-500/20 text-purple-300 border border-purple-500/30 px-2 py-0.5 rounded-full">
-              v2.1
-            </span>
+          <div className="flex items-center gap-3 mb-1.5">
+            <div className="w-9 h-9 rounded-xl bg-black/50 p-1 flex items-center justify-center border border-white/10 shrink-0 shadow-md">
+              <NullReachLogo className="w-full h-full" />
+            </div>
+            <div className="flex items-center gap-2">
+              <h1 className="text-2xl font-serif italic tracking-tight text-white">NullReach</h1>
+              <span className="text-[9px] uppercase tracking-wider font-bold bg-purple-500/20 text-purple-300 border border-purple-500/30 px-2 py-0.5 rounded-full">
+                v2.1
+              </span>
+            </div>
           </div>
-          <p className="text-[10px] uppercase tracking-[0.2em] text-white/40">Enterprise Lead Portal</p>
+          <p className="text-[10px] uppercase tracking-[0.2em] text-purple-400 font-semibold pl-12">UseCodify</p>
         </div>
 
         <nav className="flex-1 space-y-7">
@@ -899,6 +902,17 @@ function MainPortal() {
           {/* Right Header Actions */}
           <div className="flex items-center gap-3 sm:gap-4 shrink-0">
             
+            {/* Return to Landing Page Button */}
+            <button
+              id="header-landing-page-btn"
+              onClick={() => setViewMode('landing')}
+              className="flex items-center gap-1.5 px-3 py-2 rounded-full text-xs font-semibold text-white/70 hover:text-white bg-white/5 hover:bg-white/10 border border-white/10 transition cursor-pointer"
+              title="Return to Public Landing Page"
+            >
+              <Globe className="w-3.5 h-3.5 text-purple-400" />
+              <span className="hidden md:inline">Landing Page</span>
+            </button>
+
             {/* Admin Panel Header Button */}
             {isAdmin && (
               <button

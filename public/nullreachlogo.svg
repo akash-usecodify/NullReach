@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+  <defs>
+    <!-- Master silhouette clip for the geometric mountain/N body -->
+    <clipPath id="nullreach-body-clip">
+      <path d="
+        M 135 100
+        C 90 100 76 135 76 180
+        L 76 370
+        C 76 415 95 440 140 440
+        L 370 440
+        C 415 440 436 415 436 370
+        L 436 240
+        C 436 195 405 185 365 195
+        C 330 205 295 240 256 265
+        C 220 230 185 130 155 105
+        C 148 101 142 100 135 100
+        Z"
+      />
+    </clipPath>
+  </defs>
+
+  <!-- Yellow Sun Circle (stands freely in upper-right valley) -->
+  <circle cx="312" cy="128" r="48" fill="#FBBF46" />
+
+  <!-- Clipped multi-color body -->
+  <g clip-path="url(#nullreach-body-clip)">
+    <!-- Top-Left Lavender / Periwinkle -->
+    <path d="M 60 80 L 265 265 L 60 375 Z" fill="#807FC7" />
+    <polygon points="60,80 270,80 265,265 60,375" fill="#807FC7" />
+
+    <!-- Bottom Center Plum / Violet -->
+    <polygon points="60,375 265,265 375,450 60,450" fill="#8E4E86" />
+
+    <!-- Right Coral / Crimson -->
+    <polygon points="265,265 450,160 450,450 375,450" fill="#EE3258" />
+  </g>
+</svg>

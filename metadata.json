@@ -1,6 +1,6 @@
 {
   "name": "NullReach",
-  "description": "NullReach Enterprise Lead Intelligence Platform — AI-powered executive lead discovery, exclusive lead isolation, CSV sheet uploads, and dynamic contact reveal.",
+  "description": "NullReach by UseCodify — Enterprise lead discovery, exclusive lead isolation, CSV sheet uploads, and dynamic contact reveal.",
   "requestFramePermissions": [],
   "majorCapabilities": [
     "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
